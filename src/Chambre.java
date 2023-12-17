@@ -1,16 +1,14 @@
-import Enum.TypeLit;
+import Enum.Detail;
 public abstract class Chambre {
     int numero;
     boolean disponible;
-    TypeLit typeLit;
-    int prix;
+    Detail detail;
 
 
-    public Chambre(int numero, boolean disponible, TypeLit typeLit, int prix) {
+    public Chambre(int numero, boolean disponible, Detail detail) {
         this.numero = numero;
         this.disponible = disponible;
-        this.typeLit = typeLit;
-        this.prix = prix;
+        this.detail = detail;
     }
 
     public int getNumero() {
@@ -29,13 +27,24 @@ public abstract class Chambre {
         this.disponible = disponible;
     }
 
-    public abstract TypeLit getTypeLit();
+    public String getType(){
+        return this.detail.getType();
+    }
 
     public int getPrix(){
-        return prix;
+        return this.detail.getValeur();
     }
 
-    public void setPrix(int prix) {
-        this.prix = prix;
+    public String getLit(){
+        return this.detail.getLit();
     }
+
+    public  String getDetail(){
+        return "Chambre : " + getType() + "\n" +
+                "Lit : " + getLit() + "\n" +
+                "Prix : " + getPrix() + "\n";
+    }
+
+    public abstract String toString();
+
 }

@@ -1,13 +1,13 @@
-import Enum.TypeLit;
+import Enum.Detail;
 public class ChambreDouble extends Chambre{
 
 
     public ChambreDouble(int numero) {
-        super(numero, true, TypeLit.DOUBLE, 70);
+        super(numero, true, Detail.CHAMBREDOUBLE);
     }
 
     @Override
-    public TypeLit getTypeLit() {
-        return TypeLit.DOUBLE;
+    public String toString() {
+        return null;
     }
 }
