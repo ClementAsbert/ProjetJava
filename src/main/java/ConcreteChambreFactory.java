@@ -1,4 +1,5 @@
-import java.io.Serializable;
+package main.java;
+
 import java.util.Random;
 
 public class ConcreteChambreFactory extends ChambreFactory {

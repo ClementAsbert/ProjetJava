@@ -1,4 +1,6 @@
-import Enum.Detail;
+package main.java;
+
+import main.java.Enum.Detail;
 public class ChambreDouble extends Chambre{
 
 

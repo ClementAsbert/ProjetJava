@@ -1,8 +1,10 @@
-import Enum.Detail;
+package main.java;
+
+import main.java.Enum.Detail;
 public abstract class Chambre {
-    int numero;
-    boolean disponible;
-    Detail detail;
+    private int numero;
+    private boolean disponible;
+    private Detail detail;
 
 
     public Chambre(int numero, boolean disponible, Detail detail) {
@@ -40,7 +42,7 @@ public abstract class Chambre {
     }
 
     public  String getDetail(){
-        return "Chambre : " + getType() + "\n" +
+        return "main.java.Chambre : " + getType() + "\n" +
                 "Lit : " + getLit() + "\n" +
                 "Prix : " + getPrix() + "\n";
     }
