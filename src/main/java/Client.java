@@ -1,11 +1,16 @@
 package main.java;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Client {
     private String nom;
     private String prenom;
     private String email;
     private String adresse;
     private String numeroTel;
+
+    private List<Reservation> listReservation = new ArrayList<>();
 
     public Client(String nom, String prenom, String email, String adresse, String numeroTel) {
         this.nom = nom;
@@ -54,5 +59,17 @@ public class Client {
 
     public void setNumeroTel(String numeroTel) {
         this.numeroTel = numeroTel;
+    }
+
+    public List<Reservation> getListReservation(){
+        return this.listReservation;
+    }
+
+    public void addReservation(Reservation reservation){
+        this.listReservation.add(reservation);
+    }
+
+    public void deleteReservation(Reservation reservation){
+        this.listReservation.remove(reservation);
     }
 }
