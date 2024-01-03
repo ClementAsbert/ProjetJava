@@ -10,6 +10,10 @@ public class ChambreDouble extends Chambre{
 
     @Override
     public String toString() {
-        return null;
+        return "Chambre Double : \n"
+                + "Numéro : " + this.getNumero() + "\n"
+                + "Prix : " + this.getDetail().getValeur() + "\n"
+                + "Type : " + this.getDetail().getType() + "\n"
+                + "Lit : " + this.getDetail().getLit() + "\n";
     }
 }

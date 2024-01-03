@@ -28,5 +28,4 @@ public enum Detail {
         return this.lit;
     }
 
-
 }

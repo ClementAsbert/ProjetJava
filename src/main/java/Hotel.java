@@ -1,29 +1,31 @@
 package main.java;
 
+import main.java.Enum.Detail;
 import main.java.Exception.ChambreNonDisponibleException;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class Hotel implements Serializable {
-
+    private static final long serialVersionUID = 3989889470389150140L;
     private String nom;
 
-    private List<Chambre> listChambre = new ArrayList<>();
+    private List<Chambre> listChambre;
 
-    private final List<Client> listClient = new ArrayList<>();
-
-    private final List<Reservation> listReservation = new ArrayList<>();
+    private final List<Client> listClient;
 
     public Hotel(String nom) throws Throwable {
         this.nom = nom;
+        this.listChambre = new ArrayList<>();
+        this.listClient = new ArrayList<>();
         creerChambreList();
     }
 
     public void creerChambreList() throws Throwable {
-       for(int i = 1; i<=10;i++){
+       for(int i = 1; i<=2;i++){
            ChambreFactory factory = new ConcreteChambreFactory();
            this.listChambre.add(factory.build(ChambreFactory.SIMPLE, i));
            this.listChambre.add(factory.build(ChambreFactory.DOUBLE, i + 10));
@@ -32,40 +34,30 @@ public class Hotel implements Serializable {
        }
     }
 
-    public void addReservation(Reservation reservation){
-        this.listReservation.add(reservation);
+
+    public Optional<Chambre> getFirstChambreDispoByType(Date dateDebut, Date dateFin, Detail detail){
+        return this.listChambre.stream()
+                .filter(chambre -> chambre.getDetail().equals(detail))
+                .filter(chambre -> chambre.getReservations()
+                        .stream()
+                        //Regarde si la chambre est disponible dans l'intervale et que les date ne ce chevauche pas
+                        .allMatch(reservation -> dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
+                .findFirst();
     }
 
-    public void chambreDisponible(){
-        System.out.println("Chambre disponible : ");
-        for(Chambre chambre : listChambre){
-            if(chambre.isDisponible()){
-                System.out.println(chambre.getDetail());
-            }
-        }
-    }
-
-    public List<Chambre> chambreDisponibleList(){
-        List<Chambre> chambres = new ArrayList<>();
-        for(Chambre chambre : listChambre){
-            if(chambre.isDisponible()){
-                chambres.add(chambre);
-            }
-        }
-        return chambres;
-    }
-
-    public void effectuerReservation(Client client, Chambre chambre, Date dateDebut, Date dateFin) throws ChambreNonDisponibleException {
-        if(chambre.isDisponible()){
-            Reservation reservation = new Reservation(dateDebut, dateFin, chambre);
-            listReservation.add(reservation);
-            chambre.setDisponible(false);
-            client.addReservation(reservation);
-            System.out.println("Reservation affectué avec succès");
-        }else{
+    public void effectuerReservation(Client client, Detail type, Date dateDebut, Date dateFin) throws ChambreNonDisponibleException {
+        Optional<Chambre> chambre = this.getFirstChambreDispoByType(dateDebut,dateFin,type);
+        if(chambre.isEmpty()){
             throw new ChambreNonDisponibleException();
+        }else {
+            Reservation reservation = new Reservation(dateDebut,dateFin,chambre.get());
+            chambre.get().getReservations().add(reservation);
+            client.addReservation(reservation);
+            System.out.println("Reservation effectuer avec succès");
+            System.out.println(chambre.get().getNumero());
         }
     }
+
 
 
     public String getNom() {
@@ -84,8 +76,12 @@ public class Hotel implements Serializable {
         return listClient;
     }
 
-    public List<Reservation> getListReservation() {
-        return listReservation;
+    public void addClient(Client client){
+        this.listClient.add(client);
+    }
+
+    public Optional<Client> findClient(String nom){
+       return this.listClient.stream().filter(client -> client.getNom().equalsIgnoreCase(nom)).findFirst();
     }
 
     public static void saveHotel(Hotel hotel){
