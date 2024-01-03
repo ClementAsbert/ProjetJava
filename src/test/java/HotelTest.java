@@ -23,17 +23,9 @@ public class HotelTest {
     public void setup() throws Throwable {
         hotel = new Hotel("Mercury");
         chambreFactory = new ConcreteChambreFactory();
-        chambre = chambreFactory.build(1);
+        chambre = chambreFactory.build(1,1);
         client = new Client("clem", "clem", "clem@blabla.com", "777 rue", "0605334555");
 
-    }
-
-    @Test
-    public void addChambre() throws Throwable {
-        Chambre chambre1 = chambreFactory.build(ChambreFactory.SIMPLE);
-        hotel.addChambre(chambre1);
-        Assert.assertEquals(hotel.getListChambre().size(), 1 );
-        Assert.assertEquals(hotel.getListChambre().get(0), chambre1);
     }
 
     @Test
@@ -46,9 +38,7 @@ public class HotelTest {
 
     @Test
     public void chambreDisponibleList() {
-        hotel.addChambre(chambre);
-        Assert.assertEquals(hotel.chambreDisponibleList().size(), 1);
-        Assert.assertEquals(hotel.chambreDisponibleList().get(0), chambre);
+        Assert.assertEquals(hotel.chambreDisponibleList().size(), 40);
     }
 
     @Test

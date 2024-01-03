@@ -1,10 +1,11 @@
 package main.java;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Reservation {
+public class Reservation implements Serializable {
     private Date dateDebut;
     private Date dateFin;
     private Chambre chambre;

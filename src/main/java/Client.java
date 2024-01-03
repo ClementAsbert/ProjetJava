@@ -1,9 +1,10 @@
 package main.java;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Client {
+public class Client implements Serializable {
     private String nom;
     private String prenom;
     private String email;

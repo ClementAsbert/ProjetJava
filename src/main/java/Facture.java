@@ -1,6 +1,8 @@
 package main.java;
 
-public class Facture {
+import java.io.Serializable;
+
+public class Facture implements Serializable {
 
     private int prixTotal;
     Client client;

@@ -1,7 +1,10 @@
 package main.java;
 
 import main.java.Enum.Detail;
-public abstract class Chambre {
+
+import java.io.Serializable;
+
+public abstract class Chambre implements Serializable {
     private int numero;
     private boolean disponible;
     private Detail detail;
@@ -42,9 +45,11 @@ public abstract class Chambre {
     }
 
     public  String getDetail(){
-        return "main.java.Chambre : " + getType() + "\n" +
+        return "Chambre : " + getType() + "\n" +
                 "Lit : " + getLit() + "\n" +
-                "Prix : " + getPrix() + "\n";
+                "Prix : " + getPrix() + "\n" +
+                "Numero" + getNumero() + "\n";
+
     }
 
     public abstract String toString();
