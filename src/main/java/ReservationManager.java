@@ -2,6 +2,7 @@ package main.java;
 
 import main.java.Enum.Detail;
 import main.java.Exception.ChambreNonDisponibleException;
+import main.java.Exception.DateInvalideException;
 import main.java.Interface.ReservationManagerInterface;
 
 import java.io.Serializable;
@@ -53,14 +54,21 @@ public class ReservationManager implements Serializable, ReservationManagerInter
                 .findFirst();
     }
     @Override
-    public void effectuerReservation(Client client, Detail type, Date dateDebut, Date dateFin) throws ChambreNonDisponibleException {
-        Optional<Chambre> chambre = this.getFirstChambreDispoByType(dateDebut,dateFin,type);
-        if(chambre.isEmpty()){
-            throw new ChambreNonDisponibleException();
-        }else {
-            Reservation reservation = new Reservation(dateDebut,dateFin,chambre.get(),client);
-            this.listReservation.add(reservation);
-            System.out.println("Votre chambre sera la n°" + chambre.get().getNumero());
+    public void effectuerReservation(Client client, Detail type, Date dateDebut, Date dateFin) {
+        try {
+            if (dateFin.before(dateDebut) || dateDebut.after(dateFin)) {
+                throw new DateInvalideException();
+            }
+            Optional<Chambre> chambre = this.getFirstChambreDispoByType(dateDebut, dateFin, type);
+            if (chambre.isEmpty()) {
+                throw new ChambreNonDisponibleException();
+            } else {
+                Reservation reservation = new Reservation(dateDebut, dateFin, chambre.get(), client);
+                this.listReservation.add(reservation);
+                System.out.println("Votre chambre sera la n°" + chambre.get().getNumero());
+            }
+        }catch (DateInvalideException | ChambreNonDisponibleException e){
+            System.out.println("Erreur : " + e.getMessage());
         }
     }
     @Override
