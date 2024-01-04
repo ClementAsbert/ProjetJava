@@ -66,7 +66,7 @@ public class DisplayManager implements DisplayManagerInterface {
         }
     }
 
-    public void option1(Scanner scanner, Hotel hotel, Client client) throws ChambreNonDisponibleException, DateInvalideException {
+    private void option1(Scanner scanner, Hotel hotel, Client client) throws ChambreNonDisponibleException, DateInvalideException {
         System.out.println("Très bien quelle type de chambre souhaiter vous reservé ?");
         System.out.println("1-" + Detail.valueOf(Detail.CHAMBRESIMPLE.toString()));
         System.out.println("2-" + Detail.valueOf(Detail.CHAMBREDOUBLE.toString()));
@@ -109,7 +109,7 @@ public class DisplayManager implements DisplayManagerInterface {
         hotel.getReservationManager().effectuerReservation(client,type,dateDebut,dateFin);
     }
 
-    public Client option2(Scanner scanner, Hotel hotel){
+    private Client option2(Scanner scanner, Hotel hotel){
         String nom,prenom,email,telephone, rep;
         System.out.println("etes vous deja client ? (oui/non)");
         rep = scanner.next();
@@ -138,67 +138,37 @@ public class DisplayManager implements DisplayManagerInterface {
         return newClient;
     }
 
-    public void option3(Hotel hotel, Client client,Scanner scanner){
+    private void option3(Hotel hotel, Client client,Scanner scanner){
         System.out.println("Voici toutes vos reservation la quelle souhaitez vous modifier ? (Merci de saisir sont id)");
         hotel.getReservationManager().listReservationByClient(client).forEach(reservation -> System.out.println(reservation.toString()));
         int id = scanner.nextInt();
-        Optional<Reservation> reservationToModify = hotel.getReservationManager().listReservationByClient(client).stream()
-                        .filter(reservation -> reservation.getId() == id).findFirst();
+        System.out.println("Merci de saisir la nouvelles date de début");
+        String dateD = scanner.next();
+        System.out.println("Merci de saisir la nouvelles date de fin");
+        String dateF = scanner.next();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date dateDebut = null;
+        Date dateFin = null;
         try {
-            if (reservationToModify.isEmpty()) {
-                throw new NotFoundException();
-            } else {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                Date dateDebut = null;
-                Date dateFin = null;
-                while (Objects.isNull(dateDebut) || Objects.isNull(dateFin)) {
-                    System.out.println("Merci de saisir la nouvelles date de début");
-                    String dateD = scanner.next();
-                    System.out.println("Merci de saisir la nouvelles date de fin");
-                    String dateF = scanner.next();
-                    try {
-                        dateDebut = dateFormat.parse(dateD);
-                        dateFin = dateFormat.parse(dateF);
-                        if (dateFin.before(dateDebut) || dateDebut.after(dateFin)) {
-                            throw new DateInvalideException();
-                        }
-                        reservationToModify.get().setDateDebut(dateDebut);
-                        reservationToModify.get().setDateFin(dateFin);
-                        System.out.println("Changement effectuer avec succès");
-                    } catch (ParseException | DateInvalideException e) {
-                        System.out.println("Erreur : " + e.getMessage());
-                    }
-                }
-
-            }
-        }catch (NotFoundException e){
-            System.out.println("Erreur : " + e.getMessage());
+            dateDebut = dateFormat.parse(dateD);
+            dateFin = dateFormat.parse(dateF);
+        } catch (ParseException e) {
+            System.out.println("Erreur : "+e.getMessage());
         }
+        hotel.getReservationManager().modifReservation(id,dateDebut,dateFin);
 
     }
 
-    public void option5(Hotel hotel){
+    private void option5(Hotel hotel){
         System.out.println("Notre hotel compte 4 types de chambre : " + Arrays.toString(Detail.values()));
         System.out.println("Voici les details pour chaque type de chambre : \n" );
         System.out.println(hotel.getReservationManager().getDetailForAllChambre());
     }
 
-    public void option7(Hotel hotel, Client client,Scanner scanner){
+    private void option7(Hotel hotel, Client client,Scanner scanner){
         System.out.println("Voici toutes vos reservation la quelle souhaitez vous supprimer ? (Merci de saisir sont id)");
         hotel.getReservationManager().listReservationByClient(client).forEach(reservation -> System.out.println(reservation.toString()));
         int id = scanner.nextInt();
-        Optional<Reservation> reservationToModify = hotel.getReservationManager().listReservationByClient(client).stream()
-                .filter(reservation -> reservation.getId() == id).findFirst();
-        try {
-            if (reservationToModify.isEmpty()) {
-                throw new NotFoundException();
-            }else{
-                hotel.getReservationManager().listReservationByClient(client)
-                        .remove(reservationToModify.get());
-                System.out.println("Suppression effectuer avec succès");
-            }
-        }catch (NotFoundException e){
-            System.out.println("Erreur : " + e.getMessage());
-        }
+        hotel.getReservationManager().deleteReservation(id,client);
     }
 }

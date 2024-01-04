@@ -3,6 +3,7 @@ package main.java;
 import main.java.Enum.Detail;
 import main.java.Exception.ChambreNonDisponibleException;
 import main.java.Exception.DateInvalideException;
+import main.java.Exception.NotFoundException;
 import main.java.Interface.ReservationManagerInterface;
 
 import java.io.Serializable;
@@ -73,14 +74,26 @@ public class ReservationManager implements Serializable, ReservationManagerInter
     }
     @Override
     public void modifReservation(int id, Date newDateDebut, Date newDateFin ){
-        Optional<Reservation> reservationToModify = this.listReservation.stream()
-                .filter(reservation -> reservation.getId() == id )
-                .findFirst();
 
-        reservationToModify.ifPresent(reservation -> {
-            reservation.setDateDebut(newDateDebut);
-            reservation.setDateFin(newDateFin);
-        });
+        try{
+            if (newDateFin.before(newDateDebut) || newDateDebut.after(newDateFin)) {
+                throw new DateInvalideException();
+            }else{
+                Optional<Reservation> reservationToModify = this.listReservation.stream()
+                        .filter(reservation -> reservation.getId() == id )
+                        .findFirst();
+
+                reservationToModify.ifPresent(reservation -> {
+                    reservation.setDateDebut(newDateDebut);
+                    reservation.setDateFin(newDateFin);
+                    System.out.println("Modification effectué avec succès");
+                });
+            }
+        }catch (DateInvalideException e){
+            System.out.println("Erreur : "+ e.getMessage());
+        }
+
+
     }
     @Override
     public List<Reservation> listReservationByClient(Client client){
@@ -89,8 +102,20 @@ public class ReservationManager implements Serializable, ReservationManagerInter
                 .collect(Collectors.toList());
     }
     @Override
-    public void deleteReservation(int id){
-        this.listReservation.removeIf(reservation -> reservation.getId() == id);
+    public void deleteReservation(int id,Client client){
+        Optional<Reservation> reservationToModify = listReservationByClient(client).stream()
+                .filter(reservation -> reservation.getId() == id).findFirst();
+        try {
+            if (reservationToModify.isEmpty()) {
+                throw new NotFoundException();
+            }else{
+                listReservationByClient(client)
+                        .remove(reservationToModify.get());
+                System.out.println("Suppression effectuer avec succès");
+            }
+        }catch (NotFoundException e){
+            System.out.println("Erreur : " + e.getMessage());
+        };
     }
     @Override
     public List<Reservation> getListReservation() {
