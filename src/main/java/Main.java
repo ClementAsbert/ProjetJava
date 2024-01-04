@@ -1,6 +1,9 @@
 package main.java;
 
 import main.java.Enum.Detail;
+import main.java.Interface.ClientManagerInterface;
+import main.java.Interface.PersistenceManagerInterface;
+import main.java.Interface.ReservationManagerInterface;
 
 import java.awt.*;
 import java.text.ParseException;
@@ -18,23 +21,23 @@ public class Main {
         email = scan.nextLine();
         System.out.println("Renseigner votre numero de téléphone");
         numeroTel = scan.nextLine();
-        Client client = new Client(nom,prenom,email,"",numeroTel);
-        hotel.addClient(client);
+        Client client = new Client(nom,prenom,email,numeroTel);
+        //hotel.addClient(client);
         return client;
     }
     public static void main(String[] args) throws Throwable {
-        Hotel hotel = new Hotel("Melton");
-        Client client = new Client("","","","","");
-        for (Chambre chambre : hotel.getListChambre()) {
-            Date dateDebut = new Date("01/01/2025");
-            Date dateFin = new Date("07/01/2025");
-            hotel.effectuerReservation(client, chambre.getDetail(), dateDebut, dateFin);
-        }
-        hotel.effectuerReservation(client, Detail.CHAMBRESIMPLE, new Date("01/01/2025"), new Date("07/01/2025"));
-//        Hotel.saveHotel(hotel);
+        PersistenceManagerInterface persistence = new PersistenceManager();
+        ReservationManagerInterface reservationManager = new ReservationManager();
+        ClientManagerInterface clientManager = new ClientManager();
+        ChambreFactory factory = new ConcreteChambreFactory();
+        Hotel hotel = persistence.chargerHotel();
+        System.out.println(hotel.getListChambre().size());
+//        Hotel hotel = new Hotel("Melton", factory,persistence,reservationManager,clientManager);
+        Client client = new Client("","","","");
+//        hotel.saveHotel();
 //        Scanner scan = new Scanner(System.in);
 //        Optional<Client> client = Optional.empty();
-//        Hotel hotel = Hotel.chargerHotel();
+
 //        System.out.println("Bonjour bienvenue à l'hotel " + hotel.getNom());
 //        System.out.println("Quesque je peux faire pour vous ?");
 //        System.out.println("1 - Reserver une chambre");

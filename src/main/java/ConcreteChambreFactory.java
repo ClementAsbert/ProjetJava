@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class ConcreteChambreFactory extends ChambreFactory {
 
+
     @Override
     public Chambre build(int type, int num) throws IllegalArgumentException{
         switch (type){

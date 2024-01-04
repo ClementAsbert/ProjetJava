@@ -2,6 +2,9 @@ package main.java;
 
 import main.java.Enum.Detail;
 import main.java.Exception.ChambreNonDisponibleException;
+import main.java.Interface.ClientManagerInterface;
+import main.java.Interface.PersistenceManagerInterface;
+import main.java.Interface.ReservationManagerInterface;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,72 +17,16 @@ public class Hotel implements Serializable {
     private static final long serialVersionUID = 3989889470389150140L;
     private String nom;
 
-    private List<Chambre> listChambre;
+    private final PersistenceManagerInterface persistenceManager;
+    private final ReservationManagerInterface reservationManager;
+    private final ClientManagerInterface clientManager;
 
-    private final List<Client> listClient;
-
-    private List<Reservation> listReservation;
-
-    public Hotel(String nom) throws Throwable {
+    public Hotel(String nom,ChambreFactory factory,PersistenceManagerInterface persistance, ReservationManagerInterface reservation, ClientManagerInterface clientManager) throws Throwable {
         this.nom = nom;
-        this.listChambre = new ArrayList<>();
-        this.listClient = new ArrayList<>();
-        this.listReservation = new ArrayList<>();
-        creerChambreList();
-    }
-
-    public void creerChambreList() throws Throwable {
-       for(int i = 1; i<=2;i++){
-           ChambreFactory factory = new ConcreteChambreFactory();
-           this.listChambre.add(factory.build(ChambreFactory.SIMPLE, i));
-           this.listChambre.add(factory.build(ChambreFactory.DOUBLE, i + 10));
-           this.listChambre.add(factory.build(ChambreFactory.LUXESIMPLE, i + 20));
-           this.listChambre.add(factory.build(ChambreFactory.LUXDOUBLE, i + 30));
-       }
-    }
-
-
-    public Optional<Chambre> getFirstChambreDispoByType(Date dateDebut, Date dateFin, Detail detail){
-        return this.listChambre.stream()
-                .filter(chambre -> chambre.getDetail().equals(detail))
-                .filter(chambre -> this.listReservation
-                        .stream()
-                        //Regarde si la chambre est disponible dans l'intervale et que les date ne ce chevauche pas
-                        .allMatch(reservation ->reservation.getChambre() == chambre && dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
-                .findFirst();
-    }
-
-    public void effectuerReservation(Client client, Detail type, Date dateDebut, Date dateFin) throws ChambreNonDisponibleException {
-        Optional<Chambre> chambre = this.getFirstChambreDispoByType(dateDebut,dateFin,type);
-        if(chambre.isEmpty()){
-            throw new ChambreNonDisponibleException();
-        }else {
-            Reservation reservation = new Reservation(dateDebut,dateFin,chambre.get(),client);
-            this.listReservation.add(reservation);
-            System.out.println("Reservation effectuer avec succès");
-            System.out.println(chambre.get().getNumero());
-        }
-    }
-
-    public void modifReservation(int id, Date newDateDebut, Date newDateFin ){
-        Optional<Reservation> reservationToModify = this.listReservation.stream()
-                .filter(reservation -> reservation.getId() == id )
-                .findFirst();
-
-        reservationToModify.ifPresent(reservation -> {
-            reservation.setDateDebut(newDateDebut);
-            reservation.setDateFin(newDateFin);
-        });
-    }
-
-    public List<Reservation> listReservationByClient(Client client){
-        return this.listReservation.stream()
-                .filter(reservation -> reservation.getClient() == client)
-                .collect(Collectors.toList());
-    }
-
-    public void deleteReservation(int id){
-        this.listReservation.removeIf(reservation -> reservation.getId() == id);
+        this.persistenceManager = persistance;
+        this.clientManager = clientManager;
+        this.reservationManager = reservation;
+        reservation.creerChambreList(factory);
     }
 
     public String getNom() {
@@ -90,38 +37,24 @@ public class Hotel implements Serializable {
         this.nom = nom;
     }
 
-    public List<Chambre> getListChambre() {
-        return listChambre;
+    public void saveHotel(){
+        persistenceManager.saveHotel(this);
     }
 
-    public List<Client> getListClient() {
-        return listClient;
+    public Hotel loadHotel(){
+        return this.persistenceManager.chargerHotel();
     }
 
-    public void addClient(Client client){
-        this.listClient.add(client);
+    public List<Reservation> getListReservation(){
+        return this.reservationManager.getListReservation();
     }
 
-    public Optional<Client> findClient(String nom){
-       return this.listClient.stream().filter(client -> client.getNom().equalsIgnoreCase(nom)).findFirst();
+    public List<Chambre> getListChambre(){
+        return this.reservationManager.getListChambre();
     }
 
-    public static void saveHotel(Hotel hotel){
-        try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("Sauvegarde"))){
-            os.writeObject(hotel);
-            System.out.println("save");
-        }catch (IOException exception){
-            exception.printStackTrace();
-        }
+    public List<Client> getListClient(){
+        return this.clientManager.getListClient();
     }
 
-    public static Hotel chargerHotel(){
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Sauvegarde"))){
-            System.out.println("récupération");
-           return (Hotel) ois.readObject();
-        }catch (IOException | ClassNotFoundException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

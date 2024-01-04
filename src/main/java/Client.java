@@ -9,16 +9,14 @@ public class Client implements Serializable {
     private String nom;
     private String prenom;
     private String email;
-    private String adresse;
     private String numeroTel;
 
     //private List<Reservation> listReservation = new ArrayList<>();
 
-    public Client(String nom, String prenom, String email, String adresse, String numeroTel) {
+    public Client(String nom, String prenom, String email, String numeroTel) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
-        this.adresse = adresse;
         this.numeroTel = numeroTel;
     }
 
@@ -45,14 +43,6 @@ public class Client implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getAdresse() {
-        return adresse;
-    }
-
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
     }
 
     public String getNumeroTel() {
