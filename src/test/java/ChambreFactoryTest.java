@@ -18,7 +18,6 @@ public class ChambreFactoryTest {
         Assert.assertEquals(50, chambre.getDetail().getValeur());
         Assert.assertEquals("Simple", chambre.getDetail().getLit());
         Assert.assertEquals("Normale", chambre.getDetail().getType());
-        //Assert.assertNotNull(chambre.getReservations());
     }
 
     @Test
@@ -28,7 +27,6 @@ public class ChambreFactoryTest {
         Assert.assertEquals(70, chambre.getDetail().getValeur());
         Assert.assertEquals("Double", chambre.getDetail().getLit());
         Assert.assertEquals("Normale", chambre.getDetail().getType());
-        //Assert.assertNotNull(chambre.getReservations());
     }
     @Test
     public void testCreateChambreDoubleLuxe() throws Throwable {
@@ -37,7 +35,6 @@ public class ChambreFactoryTest {
         Assert.assertEquals(170, chambre.getDetail().getValeur());
         Assert.assertEquals("Double", chambre.getDetail().getLit());
         Assert.assertEquals("Luxe", chambre.getDetail().getType());
-       // Assert.assertNotNull(chambre.getReservations());
     }
     @Test
     public void testCreateChambreSimpleLuxe() throws Throwable {
@@ -46,7 +43,6 @@ public class ChambreFactoryTest {
         Assert.assertEquals(150, chambre.getDetail().getValeur());
         Assert.assertEquals("Simple", chambre.getDetail().getLit());
         Assert.assertEquals("Luxe", chambre.getDetail().getType());
-       // Assert.assertNotNull(chambre.getReservations());
     }
 
     @Test(expected = Throwable.class)

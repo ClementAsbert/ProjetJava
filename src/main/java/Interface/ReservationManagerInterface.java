@@ -78,4 +78,12 @@ public interface ReservationManagerInterface {
      * @return String
      */
     public String getDetailForAllChambre();
+
+    /**
+     * Recherche toutes les chambres disponibles dans un intervale de date
+     * @param dateDebut
+     * @param dateFin
+     * @return List<Chambre>
+     */
+    List<Chambre> getDisponibiliteByDate(Date dateDebut, Date dateFin);
 }

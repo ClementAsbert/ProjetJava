@@ -71,8 +71,8 @@ public class ReservationManagerTest {
         Assert.assertEquals(this.reservationManagerInterface.getListReservation().size(), 1);
         int id = this.reservationManagerInterface.getListReservation().get(0).getId();
         this.reservationManagerInterface.modifReservation(id,newdateDebut,newdateFin);
-        Assert.assertEquals(this.reservationManagerInterface.getListReservation().get(0).getDateDebut(), newdateDebut);
-        Assert.assertEquals(this.reservationManagerInterface.getListReservation().get(0).getDateFin(), newdateFin);
+        Assert.assertEquals(newdateDebut,this.reservationManagerInterface.getListReservation().get(0).getDateDebut());
+        Assert.assertEquals(newdateFin,this.reservationManagerInterface.getListReservation().get(0).getDateFin());
     }
 
     @Test
@@ -82,8 +82,8 @@ public class ReservationManagerTest {
         Chambre chambre = new ConcreteChambreFactory().build(1,11);
         Reservation reservation = new Reservation(dateDebut,dateFin,chambre,client);
         this.reservationManagerInterface.getListReservation().add(reservation);
-        Assert.assertEquals(this.reservationManagerInterface.listReservationByClient(client).size(), 1);
-        Assert.assertEquals(this.reservationManagerInterface.listReservationByClient(client).get(0).getClient(), client);
+        Assert.assertEquals(1,this.reservationManagerInterface.listReservationByClient(client).size());
+        Assert.assertEquals(client,this.reservationManagerInterface.listReservationByClient(client).get(0).getClient());
     }
 
     @Test
@@ -93,18 +93,26 @@ public class ReservationManagerTest {
         Chambre chambre = new ConcreteChambreFactory().build(1,11);
         Reservation reservation = new Reservation(dateDebut,dateFin,chambre,client);
         this.reservationManagerInterface.getListReservation().add(reservation);
-        Assert.assertEquals(this.reservationManagerInterface.getListReservation().size(), 1);
+        Assert.assertEquals(1,this.reservationManagerInterface.getListReservation().size());
         this.reservationManagerInterface.deleteReservation(reservation.getId());
-        Assert.assertEquals(this.reservationManagerInterface.getListReservation().size(), 0);
+        Assert.assertEquals(0,this.reservationManagerInterface.getListReservation().size());
     }
 
     @Test
     public void getListReservation() {
-        Assert.assertEquals(this.reservationManagerInterface.getListReservation().size(),0);
+        Assert.assertEquals(0,this.reservationManagerInterface.getListReservation().size());
     }
 
     @Test
     public void getListChambre() {
-        Assert.assertEquals(this.reservationManagerInterface.getListChambre().size(), 0);
+        Assert.assertEquals(0,this.reservationManagerInterface.getListChambre().size());
+    }
+
+    @Test
+    public void getDisponibiliteByDate() throws Throwable {
+        reservationManagerInterface.creerChambreList(factory);
+        Date dateDebut = new Date("01/01/2024");
+        Date dateFin = new Date("07/01/2024");
+        Assert.assertEquals(40, this.reservationManagerInterface.getDisponibiliteByDate(dateDebut,dateFin).size());
     }
 }

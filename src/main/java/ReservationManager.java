@@ -54,6 +54,15 @@ public class ReservationManager implements Serializable, ReservationManagerInter
                         .allMatch(reservation ->reservation.getChambre() == chambre && dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
                 .findFirst();
     }
+
+    public List<Chambre> getDisponibiliteByDate(Date dateDebut, Date dateFin){
+        return this.listChambre.stream()
+                .filter(chambre -> this.listReservation
+                        .stream()
+                        //Regarde si la chambre est disponible dans l'intervale et que les date ne ce chevauche pas
+                        .allMatch(reservation -> dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
+                .collect(Collectors.toList());
+    }
     @Override
     public void effectuerReservation(Client client, Detail type, Date dateDebut, Date dateFin) {
         try {
