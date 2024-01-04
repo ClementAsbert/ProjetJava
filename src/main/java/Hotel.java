@@ -1,17 +1,11 @@
 package main.java;
 
-import main.java.Enum.Detail;
-import main.java.Exception.ChambreNonDisponibleException;
 import main.java.Interface.ClientManagerInterface;
 import main.java.Interface.PersistenceManagerInterface;
 import main.java.Interface.ReservationManagerInterface;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class Hotel implements Serializable {
     private static final long serialVersionUID = 3989889470389150140L;
@@ -41,20 +35,16 @@ public class Hotel implements Serializable {
         persistenceManager.saveHotel(this);
     }
 
-    public Hotel loadHotel(){
-        return this.persistenceManager.chargerHotel();
+
+    public PersistenceManagerInterface getPersistenceManager() {
+        return persistenceManager;
     }
 
-    public List<Reservation> getListReservation(){
-        return this.reservationManager.getListReservation();
+    public ReservationManagerInterface getReservationManager() {
+        return reservationManager;
     }
 
-    public List<Chambre> getListChambre(){
-        return this.reservationManager.getListChambre();
+    public ClientManagerInterface getClientManager() {
+        return clientManager;
     }
-
-    public List<Client> getListClient(){
-        return this.clientManager.getListClient();
-    }
-
 }

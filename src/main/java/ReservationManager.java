@@ -5,10 +5,7 @@ import main.java.Exception.ChambreNonDisponibleException;
 import main.java.Interface.ReservationManagerInterface;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReservationManager implements Serializable, ReservationManagerInterface {
@@ -20,6 +17,21 @@ public class ReservationManager implements Serializable, ReservationManagerInter
     public ReservationManager(){
         this.listReservation = new ArrayList<>();
         this.listChambre = new ArrayList<>();
+    }
+
+    public String getDetailForAllChambre(){
+        Set<Class<? extends Chambre>> chambreTypes = new HashSet<>();
+        StringBuilder result = new StringBuilder();
+
+        for (Chambre chambre : listChambre) {
+            Class<? extends Chambre> type = chambre.getClass();
+
+            if (!chambreTypes.contains(type)) {
+                chambreTypes.add(type);
+                result.append(chambre.toString()).append("\n");
+            }
+        }
+        return result.toString();
     }
     @Override
     public void creerChambreList(ChambreFactory factory) throws Throwable {
@@ -48,8 +60,7 @@ public class ReservationManager implements Serializable, ReservationManagerInter
         }else {
             Reservation reservation = new Reservation(dateDebut,dateFin,chambre.get(),client);
             this.listReservation.add(reservation);
-            System.out.println("Reservation effectuer avec succès");
-            System.out.println(chambre.get().getNumero());
+            System.out.println("Votre chambre sera la n°" + chambre.get().getNumero());
         }
     }
     @Override

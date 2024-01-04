@@ -22,4 +22,5 @@ public interface ReservationManagerInterface {
     List<Reservation> getListReservation();
 
     List<Chambre> getListChambre();
+    public String getDetailForAllChambre();
 }
