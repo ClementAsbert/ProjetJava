@@ -59,7 +59,7 @@ public interface ReservationManagerInterface {
      * Suprrime une reservation
      * @param id
      */
-    void deleteReservation(int id,Client client);
+    void deleteReservation(int id);
 
     /**
      * retourn la liste de toutes les reservations

@@ -199,6 +199,6 @@ public class DisplayManager implements DisplayManagerInterface {
         System.out.println("Voici toutes vos reservation la quelle souhaitez vous supprimer ? (Merci de saisir sont id)");
         hotel.getReservationManager().listReservationByClient(client).forEach(reservation -> System.out.println(reservation.toString()));
         int id = scanner.nextInt();
-        hotel.getReservationManager().deleteReservation(id,client);
+        hotel.getReservationManager().deleteReservation(id);
     }
 }

@@ -102,14 +102,14 @@ public class ReservationManager implements Serializable, ReservationManagerInter
                 .collect(Collectors.toList());
     }
     @Override
-    public void deleteReservation(int id,Client client){
-        Optional<Reservation> reservationToModify = listReservationByClient(client).stream()
+    public void deleteReservation(int id){
+        Optional<Reservation> reservationToModify = this.listReservation.stream()
                 .filter(reservation -> reservation.getId() == id).findFirst();
         try {
             if (reservationToModify.isEmpty()) {
                 throw new NotFoundException();
             }else{
-                listReservationByClient(client)
+                this.listReservation
                         .remove(reservationToModify.get());
                 System.out.println("Suppression effectuer avec succès");
             }
@@ -121,16 +121,8 @@ public class ReservationManager implements Serializable, ReservationManagerInter
     public List<Reservation> getListReservation() {
         return listReservation;
     }
-
-    public void setListReservation(List<Reservation> listReservation) {
-        this.listReservation = listReservation;
-    }
     @Override
     public List<Chambre> getListChambre() {
         return listChambre;
-    }
-
-    public void setListChambre(List<Chambre> listChambre) {
-        this.listChambre = listChambre;
     }
 }
