@@ -15,15 +15,17 @@ public class ClientManager implements Serializable, ClientManagerInterface {
     public ClientManager() {
         this.listClient = new ArrayList<>();;
     }
-
+    @Override
     public List<Client> getListClient() {
         return listClient;
     }
 
+    @Override
     public void addClient(Client client){
         this.listClient.add(client);
     }
 
+    @Override
     public Optional<Client> findClient(String nom){
         return this.listClient.stream()
                 .filter(client -> client.getNom().equalsIgnoreCase(nom))

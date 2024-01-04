@@ -21,6 +21,7 @@ public class ReservationManager implements Serializable, ReservationManagerInter
         this.listReservation = new ArrayList<>();
         this.listChambre = new ArrayList<>();
     }
+    @Override
     public void creerChambreList(ChambreFactory factory) throws Throwable {
         for(int i = 1; i<=10;i++){
             this.getListChambre().add(factory.build(ChambreFactory.SIMPLE, i));
@@ -29,7 +30,7 @@ public class ReservationManager implements Serializable, ReservationManagerInter
             this.getListChambre().add(factory.build(ChambreFactory.LUXDOUBLE, i + 30));
         }
     }
-
+    @Override
     public Optional<Chambre> getFirstChambreDispoByType(Date dateDebut, Date dateFin, Detail detail){
         return this.listChambre.stream()
                 .filter(chambre -> chambre.getDetail().equals(detail))
@@ -39,6 +40,7 @@ public class ReservationManager implements Serializable, ReservationManagerInter
                         .allMatch(reservation ->reservation.getChambre() == chambre && dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
                 .findFirst();
     }
+    @Override
     public void effectuerReservation(Client client, Detail type, Date dateDebut, Date dateFin) throws ChambreNonDisponibleException {
         Optional<Chambre> chambre = this.getFirstChambreDispoByType(dateDebut,dateFin,type);
         if(chambre.isEmpty()){
@@ -50,7 +52,7 @@ public class ReservationManager implements Serializable, ReservationManagerInter
             System.out.println(chambre.get().getNumero());
         }
     }
-
+    @Override
     public void modifReservation(int id, Date newDateDebut, Date newDateFin ){
         Optional<Reservation> reservationToModify = this.listReservation.stream()
                 .filter(reservation -> reservation.getId() == id )
@@ -61,17 +63,17 @@ public class ReservationManager implements Serializable, ReservationManagerInter
             reservation.setDateFin(newDateFin);
         });
     }
-
+    @Override
     public List<Reservation> listReservationByClient(Client client){
         return this.listReservation.stream()
                 .filter(reservation -> reservation.getClient() == client)
                 .collect(Collectors.toList());
     }
-
+    @Override
     public void deleteReservation(int id){
         this.listReservation.removeIf(reservation -> reservation.getId() == id);
     }
-
+    @Override
     public List<Reservation> getListReservation() {
         return listReservation;
     }
@@ -79,7 +81,7 @@ public class ReservationManager implements Serializable, ReservationManagerInter
     public void setListReservation(List<Reservation> listReservation) {
         this.listReservation = listReservation;
     }
-
+    @Override
     public List<Chambre> getListChambre() {
         return listChambre;
     }

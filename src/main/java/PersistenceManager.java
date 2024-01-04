@@ -7,6 +7,7 @@ import java.io.*;
 public class PersistenceManager implements Serializable, PersistenceManagerInterface {
 
     private static final long serialVersionUID = -1081031926343701746L;
+    @Override
     public void saveHotel(Hotel hotel){
         try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("Sauvegarde"))){
             os.writeObject(hotel);
@@ -16,7 +17,7 @@ public class PersistenceManager implements Serializable, PersistenceManagerInter
         }
     }
 
-
+    @Override
     public Hotel chargerHotel(){
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Sauvegarde"))){
             System.out.println("récupération");
