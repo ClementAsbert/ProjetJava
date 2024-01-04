@@ -66,6 +66,14 @@ public class DisplayManager implements DisplayManagerInterface {
         }
     }
 
+    /**
+     * gere l'affichage de la reservation de chambre
+     * @param scanner
+     * @param hotel
+     * @param client
+     * @throws ChambreNonDisponibleException
+     * @throws DateInvalideException
+     */
     private void option1(Scanner scanner, Hotel hotel, Client client) throws ChambreNonDisponibleException, DateInvalideException {
         System.out.println("Très bien quelle type de chambre souhaiter vous reservé ?");
         System.out.println("1-" + Detail.valueOf(Detail.CHAMBRESIMPLE.toString()));
@@ -109,6 +117,12 @@ public class DisplayManager implements DisplayManagerInterface {
         hotel.getReservationManager().effectuerReservation(client,type,dateDebut,dateFin);
     }
 
+    /**
+     * enregistre ou trouve un client
+     * @param scanner
+     * @param hotel
+     * @return
+     */
     private Client option2(Scanner scanner, Hotel hotel){
         String nom,prenom,email,telephone, rep;
         System.out.println("etes vous deja client ? (oui/non)");
@@ -138,6 +152,12 @@ public class DisplayManager implements DisplayManagerInterface {
         return newClient;
     }
 
+    /**
+     * Modifie une reservation
+     * @param hotel
+     * @param client
+     * @param scanner
+     */
     private void option3(Hotel hotel, Client client,Scanner scanner){
         System.out.println("Voici toutes vos reservation la quelle souhaitez vous modifier ? (Merci de saisir sont id)");
         hotel.getReservationManager().listReservationByClient(client).forEach(reservation -> System.out.println(reservation.toString()));
@@ -159,12 +179,22 @@ public class DisplayManager implements DisplayManagerInterface {
 
     }
 
+    /**
+     * affiche les details des 4 types de chambre
+     * @param hotel
+     */
     private void option5(Hotel hotel){
         System.out.println("Notre hotel compte 4 types de chambre : " + Arrays.toString(Detail.values()));
         System.out.println("Voici les details pour chaque type de chambre : \n" );
         System.out.println(hotel.getReservationManager().getDetailForAllChambre());
     }
 
+    /**
+     * Supprime une reservation
+     * @param hotel
+     * @param client
+     * @param scanner
+     */
     private void option7(Hotel hotel, Client client,Scanner scanner){
         System.out.println("Voici toutes vos reservation la quelle souhaitez vous supprimer ? (Merci de saisir sont id)");
         hotel.getReservationManager().listReservationByClient(client).forEach(reservation -> System.out.println(reservation.toString()));
