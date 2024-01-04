@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Hotel implements Serializable {
     private static final long serialVersionUID = 3989889470389150140L;
@@ -17,10 +18,13 @@ public class Hotel implements Serializable {
 
     private final List<Client> listClient;
 
+    private List<Reservation> listReservation;
+
     public Hotel(String nom) throws Throwable {
         this.nom = nom;
         this.listChambre = new ArrayList<>();
         this.listClient = new ArrayList<>();
+        this.listReservation = new ArrayList<>();
         creerChambreList();
     }
 
@@ -38,10 +42,10 @@ public class Hotel implements Serializable {
     public Optional<Chambre> getFirstChambreDispoByType(Date dateDebut, Date dateFin, Detail detail){
         return this.listChambre.stream()
                 .filter(chambre -> chambre.getDetail().equals(detail))
-                .filter(chambre -> chambre.getReservations()
+                .filter(chambre -> this.listReservation
                         .stream()
                         //Regarde si la chambre est disponible dans l'intervale et que les date ne ce chevauche pas
-                        .allMatch(reservation -> dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
+                        .allMatch(reservation ->reservation.getChambre() == chambre && dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
                 .findFirst();
     }
 
@@ -50,15 +54,33 @@ public class Hotel implements Serializable {
         if(chambre.isEmpty()){
             throw new ChambreNonDisponibleException();
         }else {
-            Reservation reservation = new Reservation(dateDebut,dateFin,chambre.get());
-            chambre.get().getReservations().add(reservation);
-            client.addReservation(reservation);
+            Reservation reservation = new Reservation(dateDebut,dateFin,chambre.get(),client);
+            this.listReservation.add(reservation);
             System.out.println("Reservation effectuer avec succès");
             System.out.println(chambre.get().getNumero());
         }
     }
 
+    public void modifReservation(int id, Date newDateDebut, Date newDateFin ){
+        Optional<Reservation> reservationToModify = this.listReservation.stream()
+                .filter(reservation -> reservation.getId() == id )
+                .findFirst();
 
+        reservationToModify.ifPresent(reservation -> {
+            reservation.setDateDebut(newDateDebut);
+            reservation.setDateFin(newDateFin);
+        });
+    }
+
+    public List<Reservation> listReservationByClient(Client client){
+        return this.listReservation.stream()
+                .filter(reservation -> reservation.getClient() == client)
+                .collect(Collectors.toList());
+    }
+
+    public void deleteReservation(int id){
+        this.listReservation.removeIf(reservation -> reservation.getId() == id);
+    }
 
     public String getNom() {
         return nom;

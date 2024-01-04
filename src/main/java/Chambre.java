@@ -12,19 +12,19 @@ public abstract class Chambre implements Serializable {
     private boolean disponible;
     private Detail detail;
 
-    private List<Reservation> reservations;
+    //private List<Reservation> reservations;
 
 
     public Chambre(int numero, boolean disponible, Detail detail) {
         this.numero = numero;
         this.disponible = disponible;
         this.detail = detail;
-        this.reservations = new ArrayList<>();
+        //this.reservations = new ArrayList<>();
     }
 
-    public List<Reservation> getReservations(){
-        return this.reservations;
-    }
+//    public List<Reservation> getReservations(){
+//        return this.reservations;
+//    }
     public int getNumero() {
         return numero;
     }
