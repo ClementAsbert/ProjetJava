@@ -23,6 +23,7 @@ public class DisplayManager implements DisplayManagerInterface {
             System.out.println("4 - Commander un repas");
             System.out.println("5 - Afficher les details des chambres");
             System.out.println("6 - Obtenir la facture");
+            System.out.println("7 - Supprimer une reservation");
             System.out.println("0 - Quitter");
 
 
@@ -47,6 +48,11 @@ public class DisplayManager implements DisplayManagerInterface {
                     break;
                 case 5:
                     option5(hotel);
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    option7(hotel,client,scanner);
                     break;
                 case 0:
                     System.out.println("Enregistrement de l'hotel");
@@ -175,5 +181,24 @@ public class DisplayManager implements DisplayManagerInterface {
         System.out.println("Notre hotel compte 4 types de chambre : " + Arrays.toString(Detail.values()));
         System.out.println("Voici les details pour chaque type de chambre : \n" );
         System.out.println(hotel.getReservationManager().getDetailForAllChambre());
+    }
+
+    public void option7(Hotel hotel, Client client,Scanner scanner){
+        System.out.println("Voici toutes vos reservation la quelle souhaitez vous supprimer ? (Merci de saisir sont id)");
+        hotel.getReservationManager().listReservationByClient(client).forEach(reservation -> System.out.println(reservation.toString()));
+        int id = scanner.nextInt();
+        Optional<Reservation> reservationToModify = hotel.getReservationManager().listReservationByClient(client).stream()
+                .filter(reservation -> reservation.getId() == id).findFirst();
+        try {
+            if (reservationToModify.isEmpty()) {
+                throw new NotFoundException();
+            }else{
+                hotel.getReservationManager().listReservationByClient(client)
+                        .remove(reservationToModify.get());
+                System.out.println("Suppression effectuer avec succès");
+            }
+        }catch (NotFoundException e){
+            System.out.println("Erreur : " + e.getMessage());
+        }
     }
 }
