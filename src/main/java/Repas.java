@@ -14,8 +14,4 @@ public class Repas implements Serializable {
     public TypeRepas getTypeRepas() {
         return typeRepas;
     }
-
-    public void setTypeRepas(TypeRepas typeRepas) {
-        this.typeRepas = typeRepas;
-    }
 }

@@ -5,7 +5,7 @@ public class ChambreDouble extends Chambre{
 
 
     public ChambreDouble(int numero) {
-        super(numero, true, Detail.CHAMBREDOUBLE);
+        super(numero, Detail.CHAMBREDOUBLE);
     }
 
     @Override

@@ -5,7 +5,6 @@ import main.java.Interface.PersistenceManagerInterface;
 import main.java.Interface.ReservationManagerInterface;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Hotel implements Serializable {
     private static final long serialVersionUID = 3989889470389150140L;

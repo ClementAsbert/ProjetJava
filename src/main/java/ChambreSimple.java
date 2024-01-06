@@ -4,7 +4,7 @@ import main.java.Enum.Detail;
 public class ChambreSimple extends Chambre{
 
     public ChambreSimple(int numero) {
-        super(numero, true, Detail.CHAMBRESIMPLE);
+        super(numero, Detail.CHAMBRESIMPLE);
     }
     @Override
     public String toString() {

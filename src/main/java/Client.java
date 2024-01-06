@@ -51,15 +51,4 @@ public class Client implements Serializable {
         this.numeroTel = numeroTel;
     }
 
-//    public List<Reservation> getListReservation(){
-//        return this.listReservation;
-//    }
-//
-//    public void addReservation(Reservation reservation){
-//        this.listReservation.add(reservation);
-//    }
-//
-//    public void deleteReservation(Reservation reservation){
-//        this.listReservation.remove(reservation);
-//    }
 }
