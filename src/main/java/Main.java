@@ -34,8 +34,8 @@ public class Main {
         System.out.println(hotel.getListChambre().size());
 //        Hotel hotel = new Hotel("Melton", factory,persistence,reservationManager,clientManager);
         Client client = new Client("","","","");
-//        hotel.saveHotel();
-//        Scanner scan = new Scanner(System.in);
+        hotel.saveHotel();
+        Scanner scan = new Scanner(System.in);
 //        Optional<Client> client = Optional.empty();
 
 //        System.out.println("Bonjour bienvenue à l'hotel " + hotel.getNom());

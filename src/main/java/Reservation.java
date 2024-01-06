@@ -13,14 +13,16 @@ public class Reservation implements Serializable {
     private Date dateFin;
     private Client client;
     private Chambre chambre;
+    private Repas repas;
 
-    public Reservation(Date dateDebut, Date dateFin, Chambre chambre, Client client){
+    public Reservation(Date dateDebut, Date dateFin, Chambre chambre, Client client, Repas repas){
         Random random = new Random();
         this.id = random.nextInt();
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.chambre = chambre;
         this.client = client;
+        this.repas = repas;
     }
 
 
