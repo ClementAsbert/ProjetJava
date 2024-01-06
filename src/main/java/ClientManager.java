@@ -3,20 +3,18 @@ package main.java;
 import main.java.Interface.ClientManagerInterface;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ClientManager implements Serializable, ClientManagerInterface {
 
     private static final long serialVersionUID = 4750886407036939414L;
-    private final List<Client> listClient;
+    private final Set<Client> listClient;
 
     public ClientManager() {
-        this.listClient = new ArrayList<>();;
+        this.listClient = new HashSet<>();;
     }
     @Override
-    public List<Client> getListClient() {
+    public Set<Client> getListClient() {
         return listClient;
     }
 

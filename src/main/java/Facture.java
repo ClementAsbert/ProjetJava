@@ -10,16 +10,25 @@ public class Facture implements Serializable {
     private static final long serialVersionUID = -2446852111691044855L;
     private int prixTotal;
     private Client client;
+    private Reservation reservation;
 
-    private final ReservationManagerInterface reservation;
-
-    public Facture(Client client, ReservationManagerInterface reservation){
+    public Facture(Client client, Reservation reservation){
         this.reservation = reservation;
         this.client = client;
-        List<Reservation> reservationClient = new ArrayList<>();
-        reservationClient = reservation.listReservationByClient(client);
-        reservationClient
-                .forEach(reservation1 ->
-                        prixTotal += reservation1.getChambre().getDetail().getValeur());
+        this.prixTotal = this.calculFacture();
+    }
+
+    private int calculFacture(){
+        int prixRepas = this.reservation.getCommandes().stream()
+                .flatMap(commande -> commande.getListRepa().stream())
+                .map(repas -> repas.getTypeRepas().getPrix())
+                .reduce(0, Integer::sum);
+        int prixChambre = this.reservation.getChambre().getDetail().getValeur();
+        return prixChambre + prixRepas;
+    }
+
+    @Override
+    public String toString() {
+        return "Votre facture s'élève à : " + this.prixTotal + " €";
     }
 }

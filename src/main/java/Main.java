@@ -18,7 +18,7 @@ public class Main {
         ClientManagerInterface clientManager = new ClientManager();
         ChambreFactory factory = new ConcreteChambreFactory();
         DisplayManagerInterface display = new DisplayManager();
-//        Hotel hotel = new Hotel("Melton",factory,persistence,reservationManager,clientManager);
+        //Hotel hotel = new Hotel("Melton",factory,persistence,reservationManager,clientManager);
         Hotel hotel = persistence.chargerHotel();
         System.out.println("Bonjour bienvenue à l'hotel " + hotel.getNom());
         System.out.println("Quesque je peux faire pour vous ?");

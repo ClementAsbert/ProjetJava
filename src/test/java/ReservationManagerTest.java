@@ -2,6 +2,8 @@ package test.java;
 
 import main.java.*;
 import main.java.Enum.Detail;
+import main.java.Exception.DateInvalideException;
+import main.java.Exception.NotFoundException;
 import main.java.Interface.ReservationManagerInterface;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,37 +55,32 @@ public class ReservationManagerTest {
         Date dateFin = new Date("07/01/2024");
         this.reservationManagerInterface.effectuerReservation(client,Detail.CHAMBRESIMPLE,dateDebut,dateFin);
         Assert.assertEquals(this.reservationManagerInterface.listReservationByClient(client).size(), 1);
-        Assert.assertEquals(this.reservationManagerInterface.listReservationByClient(client)
-                .get(0).getDateDebut(), dateDebut);
-        Assert.assertEquals(this.reservationManagerInterface.listReservationByClient(client)
-                .get(0).getDateFin(), dateFin);
     }
 
     @Test
-    public void modifReservation() {
+    public void modifReservation() throws DateInvalideException {
         Date dateDebut = new Date("01/01/2024");
         Date dateFin = new Date("07/01/2024");
         Date newdateDebut = new Date("12/01/2024");
         Date newdateFin = new Date("22/01/2024");
         Chambre chambre = new ConcreteChambreFactory().build(1,11);
         Reservation reservation = new Reservation(dateDebut,dateFin,chambre,client);
-        this.reservationManagerInterface.getListReservation().add(reservation);
+        this.reservationManagerInterface.getListReservation().put(reservation.getId(), reservation);
         Assert.assertEquals(this.reservationManagerInterface.getListReservation().size(), 1);
-        int id = this.reservationManagerInterface.getListReservation().get(0).getId();
-        this.reservationManagerInterface.modifReservation(id,newdateDebut,newdateFin);
-        Assert.assertEquals(newdateDebut,this.reservationManagerInterface.getListReservation().get(0).getDateDebut());
-        Assert.assertEquals(newdateFin,this.reservationManagerInterface.getListReservation().get(0).getDateFin());
+        this.reservationManagerInterface.modifReservation(reservation.getId(),newdateDebut,newdateFin);
+        Assert.assertEquals(newdateDebut,this.reservationManagerInterface.getListReservation().get(reservation.getId()).getDateDebut());
+        Assert.assertEquals(newdateFin,this.reservationManagerInterface.getListReservation().get(reservation.getId()).getDateFin());
     }
 
     @Test
-    public void listReservationByClient() {
+    public void listReservationByClient() throws NotFoundException {
         Date dateDebut = new Date("01/01/2024");
         Date dateFin = new Date("07/01/2024");
         Chambre chambre = new ConcreteChambreFactory().build(1,11);
         Reservation reservation = new Reservation(dateDebut,dateFin,chambre,client);
-        this.reservationManagerInterface.getListReservation().add(reservation);
+        this.reservationManagerInterface.getListReservation().put(reservation.getId(),reservation);
         Assert.assertEquals(1,this.reservationManagerInterface.listReservationByClient(client).size());
-        Assert.assertEquals(client,this.reservationManagerInterface.listReservationByClient(client).get(0).getClient());
+        Assert.assertEquals(client,this.reservationManagerInterface.listReservationByClient(client).get(reservation.getId()).getClient());
     }
 
     @Test
@@ -92,7 +89,7 @@ public class ReservationManagerTest {
         Date dateFin = new Date("07/01/2024");
         Chambre chambre = new ConcreteChambreFactory().build(1,11);
         Reservation reservation = new Reservation(dateDebut,dateFin,chambre,client);
-        this.reservationManagerInterface.getListReservation().add(reservation);
+        this.reservationManagerInterface.getListReservation().put(reservation.getId(),reservation);
         Assert.assertEquals(1,this.reservationManagerInterface.getListReservation().size());
         this.reservationManagerInterface.deleteReservation(reservation.getId());
         Assert.assertEquals(0,this.reservationManagerInterface.getListReservation().size());

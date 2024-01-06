@@ -1,6 +1,7 @@
 package main.java;
 
 import main.java.Enum.Detail;
+import main.java.Enum.TypeRepas;
 import main.java.Exception.ChambreNonDisponibleException;
 import main.java.Exception.DateInvalideException;
 import main.java.Exception.NotFoundException;
@@ -8,12 +9,11 @@ import main.java.Interface.DisplayManagerInterface;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 
 public class DisplayManager implements DisplayManagerInterface {
 
-    public void menu(Hotel hotel) throws ChambreNonDisponibleException, DateInvalideException {
+    public void menu(Hotel hotel) throws ChambreNonDisponibleException, DateInvalideException, NotFoundException {
         Scanner scanner = new Scanner(System.in);
         Client client = null;
         while (true){
@@ -42,17 +42,35 @@ public class DisplayManager implements DisplayManagerInterface {
                     client = option2(scanner,hotel);
                     break;
                 case 3:
-                    option3(hotel, client,scanner);
+                    if (Objects.isNull(client)) {
+                        System.out.println("Merci de vous enregistrer");
+                    } else {
+                        option3(hotel,client,scanner);
+                    }
                     break;
                 case 4:
+                    if (Objects.isNull(client)) {
+                        System.out.println("Merci de vous enregistrer");
+                    } else {
+                        option4(hotel, client, scanner);
+                    }
                     break;
                 case 5:
                     option5(hotel);
                     break;
                 case 6:
+                    if (Objects.isNull(client)) {
+                        System.out.println("Merci de vous enregistrer");
+                    } else {
+                        option6(hotel, client, scanner);
+                    }
                     break;
                 case 7:
-                    option7(hotel,client,scanner);
+                    if (Objects.isNull(client)) {
+                        System.out.println("Merci de vous enregistrer");
+                    } else {
+                        option7(hotel, client, scanner);
+                    }
                     break;
                 case 0:
                     System.out.println("Enregistrement de l'hotel");
@@ -74,7 +92,7 @@ public class DisplayManager implements DisplayManagerInterface {
      * @throws ChambreNonDisponibleException
      * @throws DateInvalideException
      */
-    private void option1(Scanner scanner, Hotel hotel, Client client) throws ChambreNonDisponibleException, DateInvalideException {
+    private void option1(Scanner scanner, Hotel hotel, Client client)  {
         System.out.println("Très bien quelle type de chambre souhaiter vous reservé ?");
         System.out.println("1-" + Detail.valueOf(Detail.CHAMBRESIMPLE.toString()));
         System.out.println("2-" + Detail.valueOf(Detail.CHAMBREDOUBLE.toString()));
@@ -109,12 +127,13 @@ public class DisplayManager implements DisplayManagerInterface {
             try {
                 dateDebut = dateFormat.parse(dateD);
                 dateFin = dateFormat.parse(dateF);
-            } catch (ParseException e) {
+                System.out.println("Très bien je verifie si j'ai ce type de chambre disponible à ces dates");
+                hotel.getReservationManager().effectuerReservation(client,type,dateDebut,dateFin);
+            } catch (ParseException | DateInvalideException | ChambreNonDisponibleException e) {
                 System.out.println("Erreur : "+e.getMessage());
             }
         }
-        System.out.println("Très bien je verifie si j'ai ce type de chambre disponible à ces dates");
-        hotel.getReservationManager().effectuerReservation(client,type,dateDebut,dateFin);
+
     }
 
     /**
@@ -158,25 +177,25 @@ public class DisplayManager implements DisplayManagerInterface {
      * @param client
      * @param scanner
      */
-    private void option3(Hotel hotel, Client client,Scanner scanner){
-        System.out.println("Voici toutes vos reservation la quelle souhaitez vous modifier ? (Merci de saisir sont id)");
-        hotel.getReservationManager().listReservationByClient(client).forEach(reservation -> System.out.println(reservation.toString()));
-        int id = scanner.nextInt();
-        System.out.println("Merci de saisir la nouvelles date de début");
-        String dateD = scanner.next();
-        System.out.println("Merci de saisir la nouvelles date de fin");
-        String dateF = scanner.next();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date dateDebut = null;
-        Date dateFin = null;
-        try {
+    private void option3(Hotel hotel, Client client,Scanner scanner) {
+        try{
+            System.out.println("Voici toutes vos reservation la quelle souhaitez vous modifier ? (Merci de saisir sont id)");
+            hotel.getReservationManager().listReservationByClient(client).values().forEach(reservation -> System.out.println(reservation.toString()));
+            int id = scanner.nextInt();
+            System.out.println("Merci de saisir la nouvelles date de début");
+            String dateD = scanner.next();
+            System.out.println("Merci de saisir la nouvelles date de fin");
+            String dateF = scanner.next();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date dateDebut = null;
+            Date dateFin = null;
+
             dateDebut = dateFormat.parse(dateD);
             dateFin = dateFormat.parse(dateF);
-        } catch (ParseException e) {
+            hotel.getReservationManager().modifReservation(id,dateDebut,dateFin);
+        }catch (ParseException | DateInvalideException | NotFoundException e){
             System.out.println("Erreur : "+e.getMessage());
         }
-        hotel.getReservationManager().modifReservation(id,dateDebut,dateFin);
-
     }
 
     /**
@@ -195,10 +214,60 @@ public class DisplayManager implements DisplayManagerInterface {
      * @param client
      * @param scanner
      */
-    private void option7(Hotel hotel, Client client,Scanner scanner){
+    private void option7(Hotel hotel, Client client,Scanner scanner) throws NotFoundException {
         System.out.println("Voici toutes vos reservation la quelle souhaitez vous supprimer ? (Merci de saisir sont id)");
-        hotel.getReservationManager().listReservationByClient(client).forEach(reservation -> System.out.println(reservation.toString()));
+        hotel.getReservationManager().listReservationByClient(client).values().forEach(reservation -> System.out.println(reservation.toString()));
         int id = scanner.nextInt();
         hotel.getReservationManager().deleteReservation(id);
     }
+
+    private void option4(Hotel hotel, Client client, Scanner scanner) throws NotFoundException {
+        try{
+            hotel.getReservationManager().listReservationByClient(client).values().forEach(reservation -> System.out.println(reservation.toString()));
+            System.out.println("Sur quelle reservation souhaiter vous commander ? (tapez le numero de la reservation)");
+            int reservation = scanner.nextInt();
+            System.out.println("Très bien quelle type de rapas voulez vous commander ?");
+            System.out.println("1-" + TypeRepas.valueOf(TypeRepas.PETIT_DEJEUNER.toString()));
+            System.out.println("2-" + TypeRepas.valueOf(TypeRepas.DEJEUNER.toString()));
+            System.out.println("3-" + TypeRepas.valueOf(TypeRepas.DINER.toString()));
+            int choice = scanner.nextInt();
+            TypeRepas type = null;
+            switch (choice) {
+                case 1:
+                    type = TypeRepas.PETIT_DEJEUNER;
+                    break;
+                case 2:
+                    type = TypeRepas.DEJEUNER;
+                    break;
+                case 3:
+                    type = TypeRepas.DINER;
+                    break;
+                default:
+                    System.out.println("type invalide");
+            }
+            System.out.println("Combien en voulez vous ?");
+            int quantite = scanner.nextInt();
+            List<Repas> repas = new ArrayList<>();
+            for (int i = 0; i < quantite; i++) {
+                repas.add(new Repas(type));
+            }
+            hotel.getReservationManager().getListReservation().get(reservation).ajouterCommande(repas);
+            System.out.println("Commande effectuer avec succès");
+        }catch (NotFoundException e){
+            System.out.println("Erreur : "+e.getMessage());
+        }
+    }
+
+    private void option6(Hotel hotel, Client client, Scanner scanner){
+        try{
+            hotel.getReservationManager().listReservationByClient(client).values().forEach(reservation -> System.out.println(reservation.toString()));
+            System.out.println("Pour quelle reservation souhaitez vous la facture ? (tapez le numero)");
+            int res = scanner.nextInt();
+            Facture facture = new Facture(client,hotel.getReservationManager().getListReservation().get(res));
+            System.out.println(facture);
+        }catch (NotFoundException e){
+            System.out.println("Erreur : " +e.getMessage());
+        }
+    }
+
 }

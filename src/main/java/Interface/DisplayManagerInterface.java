@@ -2,6 +2,7 @@ package main.java.Interface;
 
 import main.java.Exception.ChambreNonDisponibleException;
 import main.java.Exception.DateInvalideException;
+import main.java.Exception.NotFoundException;
 import main.java.Hotel;
 
 public interface DisplayManagerInterface {
@@ -12,5 +13,5 @@ public interface DisplayManagerInterface {
      * @throws ChambreNonDisponibleException
      * @throws DateInvalideException
      */
-    void menu(Hotel hotel) throws ChambreNonDisponibleException, DateInvalideException;
+    void menu(Hotel hotel) throws ChambreNonDisponibleException, DateInvalideException, NotFoundException;
 }

@@ -4,9 +4,10 @@ import main.java.Client;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ClientManagerInterface {
-    List<Client> getListClient();
+    Set<Client> getListClient();
 
     /**
      * Ajoute un client dans la liste des clients

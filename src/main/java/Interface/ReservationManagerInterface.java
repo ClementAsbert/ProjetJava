@@ -6,10 +6,12 @@ import main.java.Client;
 import main.java.Enum.Detail;
 import main.java.Exception.ChambreNonDisponibleException;
 import main.java.Exception.DateInvalideException;
+import main.java.Exception.NotFoundException;
 import main.java.Reservation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ReservationManagerInterface {
@@ -46,14 +48,14 @@ public interface ReservationManagerInterface {
      * @param newDateDebut
      * @param newDateFin
      */
-    void modifReservation(int id, Date newDateDebut, Date newDateFin );
+    void modifReservation(int id, Date newDateDebut, Date newDateFin ) throws DateInvalideException;
 
     /**
      * Recupère la liste de toutes les reservation d'un client
      * @param client
      * @return List<Reservation>
      */
-    List<Reservation> listReservationByClient(Client client);
+    Map<Integer,Reservation> listReservationByClient(Client client) throws NotFoundException;
 
     /**
      * Suprrime une reservation
@@ -65,7 +67,7 @@ public interface ReservationManagerInterface {
      * retourn la liste de toutes les reservations
      * @return List<Reservation>
      */
-    List<Reservation> getListReservation();
+    Map<Integer,Reservation> getListReservation();
 
     /**
      * recupère la liste de toutes les chambres

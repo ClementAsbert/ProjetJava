@@ -13,7 +13,7 @@ public class PersistenceManager implements Serializable, PersistenceManagerInter
             os.writeObject(hotel);
             System.out.println("save");
         }catch (IOException exception){
-            exception.printStackTrace();
+            System.out.println(exception.getMessage());
         }
     }
 
@@ -23,7 +23,7 @@ public class PersistenceManager implements Serializable, PersistenceManagerInter
             System.out.println("récupération");
             return (Hotel) ois.readObject();
         }catch (IOException | ClassNotFoundException e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             return null;
         }
     }

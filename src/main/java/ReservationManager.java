@@ -8,16 +8,17 @@ import main.java.Interface.ReservationManagerInterface;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ReservationManager implements Serializable, ReservationManagerInterface {
 
     private static final long serialVersionUID = 6939002276261781623L;
-    private List<Reservation> listReservation;
+    private Map<Integer,Reservation> listReservation;
     private List<Chambre> listChambre;
 
     public ReservationManager(){
-        this.listReservation = new ArrayList<>();
+        this.listReservation = new HashMap<>();
         this.listChambre = new ArrayList<>();
     }
 
@@ -48,7 +49,7 @@ public class ReservationManager implements Serializable, ReservationManagerInter
     public Optional<Chambre> getFirstChambreDispoByType(Date dateDebut, Date dateFin, Detail detail){
         return this.listChambre.stream()
                 .filter(chambre -> chambre.getDetail().equals(detail))
-                .filter(chambre -> this.listReservation
+                .filter(chambre -> this.listReservation.values()
                         .stream()
                         //Regarde si la chambre est disponible dans l'intervale et que les date ne ce chevauche pas
                         .allMatch(reservation ->reservation.getChambre() == chambre && dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
@@ -57,15 +58,14 @@ public class ReservationManager implements Serializable, ReservationManagerInter
 
     public List<Chambre> getDisponibiliteByDate(Date dateDebut, Date dateFin){
         return this.listChambre.stream()
-                .filter(chambre -> this.listReservation
+                .filter(chambre -> this.listReservation.values()
                         .stream()
                         //Regarde si la chambre est disponible dans l'intervale et que les date ne ce chevauche pas
                         .allMatch(reservation -> dateFin.before(reservation.getDateDebut()) || dateDebut.after(reservation.getDateFin())))
                 .collect(Collectors.toList());
     }
     @Override
-    public void effectuerReservation(Client client, Detail type, Date dateDebut, Date dateFin) {
-        try {
+    public void effectuerReservation(Client client, Detail type, Date dateDebut, Date dateFin) throws DateInvalideException, ChambreNonDisponibleException {
             if (dateFin.before(dateDebut) || dateDebut.after(dateFin)) {
                 throw new DateInvalideException();
             }
@@ -74,23 +74,16 @@ public class ReservationManager implements Serializable, ReservationManagerInter
                 throw new ChambreNonDisponibleException();
             } else {
                 Reservation reservation = new Reservation(dateDebut, dateFin, chambre.get(), client);
-                this.listReservation.add(reservation);
+                this.listReservation.put(reservation.getId(), reservation);
                 System.out.println("Votre chambre sera la n°" + chambre.get().getNumero());
             }
-        }catch (DateInvalideException | ChambreNonDisponibleException e){
-            System.out.println("Erreur : " + e.getMessage());
-        }
     }
     @Override
-    public void modifReservation(int id, Date newDateDebut, Date newDateFin ){
-
-        try{
+    public void modifReservation(int id, Date newDateDebut, Date newDateFin ) throws DateInvalideException {
             if (newDateFin.before(newDateDebut) || newDateDebut.after(newDateFin)) {
                 throw new DateInvalideException();
             }else{
-                Optional<Reservation> reservationToModify = this.listReservation.stream()
-                        .filter(reservation -> reservation.getId() == id )
-                        .findFirst();
+                Optional<Reservation> reservationToModify = Optional.ofNullable(this.listReservation.get(id));
 
                 reservationToModify.ifPresent(reservation -> {
                     reservation.setDateDebut(newDateDebut);
@@ -98,28 +91,24 @@ public class ReservationManager implements Serializable, ReservationManagerInter
                     System.out.println("Modification effectué avec succès");
                 });
             }
-        }catch (DateInvalideException e){
-            System.out.println("Erreur : "+ e.getMessage());
-        }
-
-
     }
     @Override
-    public List<Reservation> listReservationByClient(Client client){
-        return this.listReservation.stream()
+    public Map<Integer,Reservation> listReservationByClient(Client client) throws NotFoundException {
+        Map<Integer,Reservation> reservations = this.listReservation.values().stream()
                 .filter(reservation -> reservation.getClient() == client)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(Reservation::getId, Function.identity()));
+        if(reservations.isEmpty()){
+            throw new NotFoundException();
+        }
+        return reservations;
     }
     @Override
     public void deleteReservation(int id){
-        Optional<Reservation> reservationToModify = this.listReservation.stream()
-                .filter(reservation -> reservation.getId() == id).findFirst();
         try {
-            if (reservationToModify.isEmpty()) {
+            if (!this.listReservation.containsKey(id)) {
                 throw new NotFoundException();
             }else{
-                this.listReservation
-                        .remove(reservationToModify.get());
+                this.listReservation.remove(id);
                 System.out.println("Suppression effectuer avec succès");
             }
         }catch (NotFoundException e){
@@ -127,11 +116,13 @@ public class ReservationManager implements Serializable, ReservationManagerInter
         };
     }
     @Override
-    public List<Reservation> getListReservation() {
+    public Map<Integer,Reservation> getListReservation() {
         return listReservation;
     }
     @Override
     public List<Chambre> getListChambre() {
         return listChambre;
     }
+
+
 }

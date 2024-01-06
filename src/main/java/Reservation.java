@@ -1,7 +1,9 @@
 package main.java;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class Reservation implements Serializable {
@@ -12,13 +14,18 @@ public class Reservation implements Serializable {
     private Client client;
     private Chambre chambre;
 
+    private List<Commande> commandes;
+
+
+
     public Reservation(Date dateDebut, Date dateFin, Chambre chambre, Client client){
         Random random = new Random();
-        this.id = random.nextInt();
+        this.id = Math.abs(random.nextInt());
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.chambre = chambre;
         this.client = client;
+        this.commandes = new ArrayList<>();
     }
 
 
@@ -58,5 +65,13 @@ public class Reservation implements Serializable {
 
     public Client getClient() {
         return client;
+    }
+
+    public void ajouterCommande(List<Repas> repas){
+        this.commandes.add(new Commande(repas));
+    }
+
+    public List<Commande> getCommandes() {
+        return commandes;
     }
 }
